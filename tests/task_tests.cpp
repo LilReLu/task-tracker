@@ -35,3 +35,12 @@ TEST(TaskTest, UpdateStatus) {
     task.update_status("INVALID_STATUS");
     EXPECT_EQ(task.get_status(), TaskStatus::DONE);
 }
+
+TEST(TaskTest, UpdateDescription) {
+    Task task("T-003", "Initial description");
+	EXPECT_EQ(task.get_description(), "Initial description");
+    std::string new_desc = "Updated description";
+    // ¸üĞÂÃèÊö
+    task.update_description(new_desc);
+    EXPECT_EQ(task.get_description(), new_desc);
+}

@@ -39,5 +39,6 @@ void Task::update_description(std::string new_description) {
 void Task::remove() {
 	// Logic to remove the task, if applicable
 	std::cout << "Task " << id << " removed." << std::endl;
+	Task::~Task(); 
 }
 
