@@ -1,7 +1,9 @@
 #include <vector>
 #include <fstream>
+#include <memory>
 #include "task.h"
 #include <nlohmann/json.hpp>
+#pragma once
 
 class TaskManager {
 
@@ -22,10 +24,10 @@ public:
 	void list_tasks();
 
 private:
-	std::vector<Task*> tasks;
-	bool file_exists_flag;
+	std::vector<std::unique_ptr<Task>> tasks;
 	bool data_flag;
 
+	void ensure_file_exists(const std::string filename);
 	void save_to_file(std::string filename);
 	void load_from_file(std::string filename);
 };

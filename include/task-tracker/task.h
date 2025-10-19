@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #include <string>
 #include <ctime>
 #include <stdexcept>
@@ -20,15 +20,15 @@ inline TaskStatus string_to_status(const std::string& s) {
 class Task {
 
 public:
-	Task(std::string id, std::string description);
+	Task(const std::string id,const std::string description);
 	~Task();
 
 	Task(const Task&) = delete; // Disable copy constructor
 	Task& operator=(const Task&) = delete; // Disable copy assignment
 
 
-	void update_status(std::string); // Update task status
-	void update_description(std::string); // Update task description
+	void update_status(const std::string); // Update task status
+	void update_description(const std::string); // Update task description
 	void remove(); // Remove task
 
 	// --- Getters (Îª²âÊÔÌí¼Ó) ---

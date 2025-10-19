@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "task-tracker/task.h"
+#include "task-tracker/task_manager.h"
 #include <thread>  // 用于 std::this_thread::sleep_for
 #include <chrono>  // 用于 std::chrono::seconds
 
@@ -44,3 +45,46 @@ TEST(TaskTest, UpdateDescription) {
     task.update_description(new_desc);
     EXPECT_EQ(task.get_description(), new_desc);
 }
+
+TEST(TaskTest, TimeUpdateOnModification) {
+    Task task("T-004", "Check timestamps");
+    std::time_t created_at = task.get_created_at();
+    std::time_t updated_at = task.get_updated_at();
+    // 刚创建时，created_at 和 updated_at 应相等
+    EXPECT_EQ(created_at, updated_at);
+    // 等待一秒钟以确保时间戳会改变
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    // 更新描述，应该更新 updated_at
+    task.update_description("New description");
+    std::time_t new_updated_at = task.get_updated_at();
+    EXPECT_GT(new_updated_at, updated_at); // updated_at 应该更新
+    // 再次等待一秒钟
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    // 更新状态，应该再次更新 updated_at
+    task.update_status("IN_PROGRESS");
+    std::time_t latest_updated_at = task.get_updated_at();
+    EXPECT_GT(latest_updated_at, new_updated_at); // updated_at 应该再次更新
+}
+
+TEST(TaskTest, RemoveTask) {
+    Task* task = new Task("T-005", "Task to be removed");
+    // 确保任务已创建
+    EXPECT_EQ(task->get_id(), "T-005");
+    // 移除任务
+    task->remove();
+    // 由于 remove 调用了析构函数，task 指针现在悬空，不能再访问它
+    // 这里我们只是确保没有崩溃发生
+    SUCCEED();
+}
+
+TEST(TaskManagerTest, AddAndGetTask) {
+    TaskManager manager;
+	Task* empty_task = manager.get_task("NON_EXISTENT");
+	EXPECT_EQ(empty_task, nullptr); // 确保不存在的任务返回 nullptr
+    manager.add_task("T-006", "Manage tasks effectively");
+    Task* task = manager.get_task("T-006");
+    ASSERT_NE(task, nullptr); // 确保任务被正确添加
+    EXPECT_EQ(task->get_id(), "T-006");
+    EXPECT_EQ(task->get_description(), "Manage tasks effectively");
+}
+
