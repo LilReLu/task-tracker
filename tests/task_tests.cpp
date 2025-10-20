@@ -98,3 +98,51 @@ TEST(TaskManagerTest, RemoveTask) {
     EXPECT_EQ(removed_task, nullptr); // 确保任务被正确移除
 }
 
+TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
+    TaskManager manager;
+    manager.add_task("T-008", "Initial description");
+    manager.update_task_status("T-008", "IN_PROGRESS");
+    manager.update_task_description("T-008", "Updated description");
+    Task* task = manager.get_task("T-008");
+    ASSERT_NE(task, nullptr); // 确保任务存在
+    EXPECT_NE(task->get_status(), TaskStatus::TO_DO);
+    EXPECT_EQ(task->get_status(), TaskStatus::IN_PROGRESS);
+    EXPECT_NE(task->get_description(), "Initial description");
+    EXPECT_EQ(task->get_description(), "Updated description");
+}
+
+TEST(TaskManagerTest, ListAllTasks) {
+    TaskManager manager;
+    manager.add_task("T-001", "Task 1");
+    manager.add_task("T-002", "Task 2");
+    // 捕获标准输出
+    testing::internal::CaptureStdout();
+    manager.list_tasks();
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("T-001"), std::string::npos); // 应包含 T-001
+    EXPECT_NE(output.find("T-002"), std::string::npos); // 应包含 T-002
+}
+
+TEST(TaskManagerTest, ListTasksByStatus) {
+    TaskManager manager;
+    manager.add_task("T-009", "Task 1");
+    manager.add_task("T-010", "Task 2");
+    manager.update_task_status("T-010", "DONE");
+    // 捕获标准输出
+    testing::internal::CaptureStdout();
+    manager.list_tasks(TaskStatus::TO_DO);
+    std::string output_todo = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output_todo.find("T-009"), std::string::npos); // 应包含 T-009
+    EXPECT_EQ(output_todo.find("T-010"), std::string::npos); // 不应包含 T-010
+    testing::internal::CaptureStdout();
+    manager.list_tasks(TaskStatus::DONE);
+    std::string output_done = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output_done.find("T-010"), std::string::npos); // 应包含 T-010
+    EXPECT_EQ(output_done.find("T-009"), std::string::npos); // 不应包含 T-009
+	testing::internal::CaptureStdout();
+    manager.list_tasks(TaskStatus::IN_PROGRESS);
+    std::string output_in_progress = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output_in_progress.find("T-009"), std::string::npos); // 不应包含 T-009
+	EXPECT_EQ(output_in_progress.find("T-010"), std::string::npos); // 不应包含 T-010
+}
+

@@ -65,3 +65,43 @@ Task* TaskManager::get_task(std::string id) {
 	}
 	return nullptr;
 }
+
+void TaskManager::update_task_status(std::string id, std::string new_status) {
+	Task* task = get_task(id);
+	if (task) {
+		task->update_status(new_status);
+		data_flag = true;
+	}
+	else {
+		std::cerr << "Task with ID " << id << " not found." << std::endl;
+	}
+}
+
+void TaskManager::update_task_description(const std::string id, const std::string new_description) {
+	Task* task = get_task(id);
+	if (task) {
+		task->update_description(new_description);
+		data_flag = true;
+	}
+	else {
+		std::cerr << "Task with ID " << id << " not found." << std::endl;
+	}
+}
+
+void TaskManager::list_tasks() {
+	for (const auto& task : tasks) {
+		std::cout << "ID: " << task->get_id()
+			<< ", Description: " << task->get_description()
+			<< ", Status: ";
+	}
+}
+
+void TaskManager::list_tasks(TaskStatus statu){
+	for (const auto& task : tasks) {
+		if( task->get_status() == statu ) {
+			std::cout << "ID: " << task->get_id()
+				<< ", Description: " << task->get_description()
+				<< ", Status: ";
+		}
+	}
+}
