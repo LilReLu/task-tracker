@@ -47,6 +47,16 @@ void TaskManager::add_task(std::string id, std::string description) {
 	data_flag = true;
 }
 
+void TaskManager::remove_task(std::string id) {
+	tasks.erase(
+		std::remove_if(tasks.begin(), tasks.end(),
+			[&id](const std::unique_ptr<Task>& task) {
+				return task->get_id() == id;
+			}),
+		tasks.end()
+	);
+}
+
 Task* TaskManager::get_task(std::string id) {
 	for (const auto& task : tasks) {
 		if (task->get_id() == id) {

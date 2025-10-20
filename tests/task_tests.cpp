@@ -88,3 +88,13 @@ TEST(TaskManagerTest, AddAndGetTask) {
     EXPECT_EQ(task->get_description(), "Manage tasks effectively");
 }
 
+TEST(TaskManagerTest, RemoveTask) {
+    TaskManager manager;
+    manager.add_task("T-007", "Task to be removed from manager");
+    Task* task = manager.get_task("T-007");
+    ASSERT_NE(task, nullptr); // 确保任务被正确添加
+    manager.remove_task("T-007");
+    Task* removed_task = manager.get_task("T-007");
+    EXPECT_EQ(removed_task, nullptr); // 确保任务被正确移除
+}
+
