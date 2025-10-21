@@ -9,12 +9,22 @@ enum class TaskStatus {
 	DONE
 };
 
-// 辅助函数，用于将字符串转换为枚举
+// 将字符串转换为TaskStatus枚举值
 inline TaskStatus string_to_status(const std::string& s) {
 	if (s == "IN_PROGRESS") return TaskStatus::IN_PROGRESS;
 	if (s == "DONE") return TaskStatus::DONE;
 	if (s == "TO_DO") return TaskStatus::TO_DO;
 	throw std::invalid_argument("Invalid status string");
+}
+
+// 将TaskStatus枚举值转换为字符串
+inline std::string status_to_string(TaskStatus status) {
+	switch (status) {
+	case TaskStatus::TO_DO: return "TO_DO";
+	case TaskStatus::IN_PROGRESS: return "IN_PROGRESS";
+	case TaskStatus::DONE: return "DONE";
+	default: return "UNKNOWN";
+	}
 }
 
 class Task {

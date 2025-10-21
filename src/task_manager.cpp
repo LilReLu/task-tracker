@@ -5,6 +5,17 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
+TaskManager::TaskManager(const std::string filename )
+	: filename(filename) {
+	ensure_file_exists(filename);
+	load_from_file(filename);
+}
+TaskManager::~TaskManager() {
+	/*if (data_flag) {
+		save_to_file("tasks.json");
+	}*/
+}
+
 void TaskManager::ensure_file_exists(const std::string filename) {
 	std::ifstream test(filename);
 	if( !test.good() ) {
@@ -52,24 +63,16 @@ void TaskManager::load_from_file(std::string filename) {
 	}
 }
 
-TaskManager::TaskManager(const std::string filename )
-	: filename(filename) {
-	ensure_file_exists(filename);
-	load_from_file(filename);
-}
-TaskManager::~TaskManager() {
-	/*if (data_flag) {
-		save_to_file("tasks.json");
-	}*/
-}
-
-void TaskManager::add_task(std::string id, std::string description) {
+Task* TaskManager::add_task(std::string id, std::string description) {
 	std::unique_ptr<Task> task = std::make_unique<Task>(id, description);
 	tasks.push_back(std::move(task));
 	save_to_file();
+	return tasks.back().get();
 }
 
-void TaskManager::remove_task(std::string id) {
+bool TaskManager::remove_task(std::string id) {
+	const size_t original_size = tasks.size();
+
 	tasks.erase(
 		std::remove_if(tasks.begin(), tasks.end(),
 			[&id](const std::unique_ptr<Task>& task) {
@@ -77,6 +80,8 @@ void TaskManager::remove_task(std::string id) {
 			}),
 		tasks.end()
 	);
+	const size_t new_size = tasks.size();
+	return new_size < original_size;
 }
 
 Task* TaskManager::get_task(std::string id) {
@@ -88,7 +93,7 @@ Task* TaskManager::get_task(std::string id) {
 	return nullptr;
 }
 
-void TaskManager::update_task_status(std::string id, std::string new_status) {
+Task* TaskManager::Taskupdate_task_status(std::string id, std::string new_status) {
 	Task* task = get_task(id);
 	if (task) {
 		task->update_status(new_status);
@@ -97,9 +102,10 @@ void TaskManager::update_task_status(std::string id, std::string new_status) {
 		std::cerr << "Task with ID " << id << " not found." << std::endl;
 	}
 	save_to_file();
+	return task;
 }
 
-void TaskManager::update_task_description(const std::string id, const std::string new_description) {
+Task* TaskManager::Taskupdate_task_description(const std::string id, const std::string new_description) {
 	Task* task = get_task(id);
 	if (task) {
 		task->update_description(new_description);
@@ -108,38 +114,29 @@ void TaskManager::update_task_description(const std::string id, const std::strin
 		std::cerr << "Task with ID " << id << " not found." << std::endl;
 	}
 	save_to_file();
+	return task;
 }
 
-void TaskManager::list_tasks() {
+std::vector<const Task*> TaskManager::list_tasks() {
+	std::vector<const Task*> task_list;
+	tasks.reserve(tasks.size());
 	for (const auto& task : tasks) {
-		std::cout << "ID: " << task->get_id()
-			<< ", Description: " << task->get_description()
-			<< ", Status: ";
+		task_list.push_back(task.get());
 	}
+	return task_list;
 }
 
-void TaskManager::list_tasks(TaskStatus statu){
+std::vector<const Task*> TaskManager::list_tasks(TaskStatus statu){
+	std::vector<const Task*> filtered_tasks;
 	for (const auto& task : tasks) {
 		if( task->get_status() == statu ) {
-			std::cout << "ID: " << task->get_id()
-				<< ", Description: " << task->get_description()
-				<< ", Status: ";
+			filtered_tasks.push_back( task.get() );
 		}
 	}
+	return filtered_tasks;
 }
 
-inline std::string status_tostring(TaskStatus status) {
-		switch (status) {
-	case TaskStatus::TO_DO:
-		return "TO_DO";
-	case TaskStatus::IN_PROGRESS:
-		return "IN_PROGRESS";
-	case TaskStatus::DONE:
-		return "DONE";
-	default:
-		return "UNKNOWN";
-		}
-}
+
 
 void TaskManager::save_to_file() {
 	nlohmann::json j = nlohmann::json::array();
@@ -147,7 +144,7 @@ void TaskManager::save_to_file() {
 		nlohmann::json item;
 		item["id"] =  task->get_id();
 		item["description"] = task->get_description();
-		item["status"] = status_tostring( task->get_status() );
+		item["status"] = status_to_string( task->get_status() );
 		item["created_at"] = task->get_created_at();
 		item["updated_at"] = task->get_updated_at();
 		j.push_back(item);

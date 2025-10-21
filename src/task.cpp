@@ -6,15 +6,10 @@ Task::Task(const std::string id,const  std::string description)
 	: id(id), description(description), status(TaskStatus::TO_DO) {
 		created_at = std::time(nullptr);
 		updated_at = created_at;
-
-		std::cout << "Task " << id << " created." << std::endl
-				  << "Description: " << description << std::endl;
 }
 
 Task::Task(const std::string id, const  std::string description, TaskStatus statu, std::time_t creat, std::time_t update)
 	: id(id), description(description), status(statu), created_at(creat), updated_at(update) {
-	std::cout << "Task " << id << " load." << std::endl
-		<< "Description: " << description << std::endl;
 }
 
 Task::~Task() {

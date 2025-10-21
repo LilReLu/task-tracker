@@ -15,15 +15,15 @@ public:
 	TaskManager(const TaskManager&) = delete; // Disable copy constructor
 	TaskManager& operator=(const TaskManager&) = delete; // Disable copy assignment
 
-	void add_task(std::string id, std::string description);
-	void remove_task(std::string id);
+	Task* add_task(std::string id, std::string description);
+	bool remove_task(std::string id);
 	Task* get_task(std::string id);
 
-	void update_task_status(std::string id, std::string new_status);
-	void update_task_description(const std::string id,const std::string new_description);
+	Task* Taskupdate_task_status(std::string id, std::string new_status);
+	Task* Taskupdate_task_description(const std::string id, const std::string new_description);
 
-	void list_tasks();
-	void list_tasks(TaskStatus statu);
+	std::vector<const Task*> list_tasks();
+	std::vector<const Task*> list_tasks(TaskStatus statu);
 
 	bool IsEmpty() const {
 		return tasks.empty();
@@ -37,3 +37,4 @@ private:
 	void save_to_file();
 	void load_from_file(std::string filename);
 };
+
