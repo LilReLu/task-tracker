@@ -32,7 +32,6 @@ public:
 private:
 	std::vector<std::unique_ptr<Task>> tasks;
 	std::string filename;
-	bool data_flag;
 
 	void ensure_file_exists(const std::string filename);
 	void save_to_file();

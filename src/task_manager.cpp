@@ -53,7 +53,7 @@ void TaskManager::load_from_file(std::string filename) {
 }
 
 TaskManager::TaskManager(const std::string filename )
-	: filename(filename), data_flag(false) {
+	: filename(filename) {
 	ensure_file_exists(filename);
 	load_from_file(filename);
 }
@@ -66,7 +66,7 @@ TaskManager::~TaskManager() {
 void TaskManager::add_task(std::string id, std::string description) {
 	std::unique_ptr<Task> task = std::make_unique<Task>(id, description);
 	tasks.push_back(std::move(task));
-	data_flag = true;
+	save_to_file();
 }
 
 void TaskManager::remove_task(std::string id) {
@@ -92,7 +92,6 @@ void TaskManager::update_task_status(std::string id, std::string new_status) {
 	Task* task = get_task(id);
 	if (task) {
 		task->update_status(new_status);
-		data_flag = true;
 	}
 	else {
 		std::cerr << "Task with ID " << id << " not found." << std::endl;
@@ -104,7 +103,6 @@ void TaskManager::update_task_description(const std::string id, const std::strin
 	Task* task = get_task(id);
 	if (task) {
 		task->update_description(new_description);
-		data_flag = true;
 	}
 	else {
 		std::cerr << "Task with ID " << id << " not found." << std::endl;

@@ -147,29 +147,6 @@ TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
     EXPECT_EQ(task->get_description(), "Updated description");
 }
 
-TEST(TaskManagerTest, ListTasksByStatus) {
-    TaskManager manager;
-    manager.add_task("T-009", "Task 1");
-    manager.add_task("T-010", "Task 2");
-    manager.update_task_status("T-010", "DONE");
-    // 捕获标准输出
-    testing::internal::CaptureStdout();
-    manager.list_tasks(TaskStatus::TO_DO);
-    std::string output_todo = testing::internal::GetCapturedStdout();
-    EXPECT_NE(output_todo.find("T-009"), std::string::npos); // 应包含 T-009
-    EXPECT_EQ(output_todo.find("T-010"), std::string::npos); // 不应包含 T-010
-    testing::internal::CaptureStdout();
-    manager.list_tasks(TaskStatus::DONE);
-    std::string output_done = testing::internal::GetCapturedStdout();
-    EXPECT_NE(output_done.find("T-010"), std::string::npos); // 应包含 T-010
-    EXPECT_EQ(output_done.find("T-009"), std::string::npos); // 不应包含 T-009
-	testing::internal::CaptureStdout();
-    manager.list_tasks(TaskStatus::IN_PROGRESS);
-    std::string output_in_progress = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output_in_progress.find("T-009"), std::string::npos); // 不应包含 T-009
-	EXPECT_EQ(output_in_progress.find("T-010"), std::string::npos); // 不应包含 T-010
-}
-
 TEST(TaskManagerTest, ListAllTasks) {
     TaskManager manager;
     manager.add_task("T-0011", "Task 11");
@@ -180,6 +157,40 @@ TEST(TaskManagerTest, ListAllTasks) {
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_NE(output.find("T-0011"), std::string::npos); // 应包含 T-0011
     EXPECT_NE(output.find("T-0012"), std::string::npos); // 应包含 T-0012
+}
+
+TEST_F(FilereaderTest, ListTasksByStatu) {
+    TaskManager manager("test_tasks.json");
+    // 捕获标准输出
+    testing::internal::CaptureStdout();
+    manager.list_tasks(TaskStatus::TO_DO);
+    std::string output = testing::internal::GetCapturedStdout();
+    // 应包含 T-001 和 T-004
+    EXPECT_NE(output.find("T-001"), std::string::npos);
+    EXPECT_NE(output.find("T-004"), std::string::npos);
+    // 不应包含 T-002 和 T-003
+    EXPECT_EQ(output.find("T-002"), std::string::npos);
+	EXPECT_EQ(output.find("T-003"), std::string::npos);
+
+	testing::internal::CaptureStdout();
+	manager.list_tasks(TaskStatus::IN_PROGRESS);
+    output = testing::internal::GetCapturedStdout();
+    // 应包含 T-002
+    EXPECT_NE(output.find("T-002"), std::string::npos);
+    // 不应包含 T-001、T-003 和 T-004
+    EXPECT_EQ(output.find("T-001"), std::string::npos);
+    EXPECT_EQ(output.find("T-003"), std::string::npos);
+	EXPECT_EQ(output.find("T-004"), std::string::npos);
+
+	testing::internal::CaptureStdout();
+	manager.list_tasks(TaskStatus::DONE);
+    output = testing::internal::GetCapturedStdout();
+    // 应包含 T-003
+    EXPECT_NE(output.find("T-003"), std::string::npos);
+    // 不应包含 T-001、T-002 和 T-004
+    EXPECT_EQ(output.find("T-001"), std::string::npos);
+    EXPECT_EQ(output.find("T-002"), std::string::npos);
+	EXPECT_EQ(output.find("T-004"), std::string::npos);
 }
 
 TEST_F(FilereaderTest, LoadFromFile) {
