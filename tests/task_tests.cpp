@@ -4,6 +4,53 @@
 #include <thread>  // 用于 std::this_thread::sleep_for
 #include <chrono>  // 用于 std::chrono::seconds
 
+class FilereaderTest : public ::testing::Test {
+protected:
+    std::string test_file = "test_tasks.json";
+    std::string test_json_content = R"([
+        {
+            "id": "T-001",
+            "description": "Test task 1",
+            "status": "TO_DO",
+            "created_at": 1672567200,
+            "updated_at": 1672567200
+        },
+        {
+            "id": "T-002",
+            "description": "Test task 2",
+            "status": "IN_PROGRESS",
+            "created_at": 1672657200,
+            "updated_at": 1672658200
+        },
+        {
+            "id": "T-003",
+            "description": "Test task 3",
+            "status": "DONE",
+            "created_at": 1672743600,
+            "updated_at": 1672744600
+        },
+        {
+            "id": "T-004",
+            "description": "Test task 4",
+            "status": "TO_DO",
+            "created_at": 1672830000,
+            "updated_at": 1672830000
+        }
+    ])";
+    void SetUp() override {
+        // 在每个测试前创建测试文件
+        std::ofstream ofs(test_file);
+        ASSERT_TRUE(ofs.is_open()) << "Failed to create test file for SetUp.";
+
+        ofs << test_json_content;
+        ofs.close();
+	}
+    void TearDown() override {
+        // 在每个测试后删除测试文件
+        std::remove(test_file.c_str());
+	}
+};
+
 // 测试构造函数是否正确设置了初始状态
 TEST(TaskTest, ConstructorInitialization) {
     std::string id = "T-001";
@@ -66,17 +113,6 @@ TEST(TaskTest, TimeUpdateOnModification) {
     EXPECT_GT(latest_updated_at, new_updated_at); // updated_at 应该再次更新
 }
 
-TEST(TaskTest, RemoveTask) {
-    Task* task = new Task("T-005", "Task to be removed");
-    // 确保任务已创建
-    EXPECT_EQ(task->get_id(), "T-005");
-    // 移除任务
-    task->remove();
-    // 由于 remove 调用了析构函数，task 指针现在悬空，不能再访问它
-    // 这里我们只是确保没有崩溃发生
-    SUCCEED();
-}
-
 TEST(TaskManagerTest, AddAndGetTask) {
     TaskManager manager;
 	Task* empty_task = manager.get_task("NON_EXISTENT");
@@ -111,18 +147,6 @@ TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
     EXPECT_EQ(task->get_description(), "Updated description");
 }
 
-TEST(TaskManagerTest, ListAllTasks) {
-    TaskManager manager;
-    manager.add_task("T-001", "Task 1");
-    manager.add_task("T-002", "Task 2");
-    // 捕获标准输出
-    testing::internal::CaptureStdout();
-    manager.list_tasks();
-    std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_NE(output.find("T-001"), std::string::npos); // 应包含 T-001
-    EXPECT_NE(output.find("T-002"), std::string::npos); // 应包含 T-002
-}
-
 TEST(TaskManagerTest, ListTasksByStatus) {
     TaskManager manager;
     manager.add_task("T-009", "Task 1");
@@ -146,3 +170,81 @@ TEST(TaskManagerTest, ListTasksByStatus) {
 	EXPECT_EQ(output_in_progress.find("T-010"), std::string::npos); // 不应包含 T-010
 }
 
+TEST(TaskManagerTest, ListAllTasks) {
+    TaskManager manager;
+    manager.add_task("T-0011", "Task 11");
+    manager.add_task("T-0012", "Task 12");
+    // 捕获标准输出
+    testing::internal::CaptureStdout();
+    manager.list_tasks();
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("T-0011"), std::string::npos); // 应包含 T-0011
+    EXPECT_NE(output.find("T-0012"), std::string::npos); // 应包含 T-0012
+}
+
+TEST_F(FilereaderTest, LoadFromFile) {
+    TaskManager manager("test_tasks.json");
+    // 检查任务是否正确加载
+    Task* task1 = manager.get_task("T-001");
+    ASSERT_NE(task1, nullptr);
+    EXPECT_EQ(task1->get_description(), "Test task 1");
+    EXPECT_EQ(task1->get_status(), TaskStatus::TO_DO);
+	EXPECT_EQ(task1->get_created_at(), 1672567200);
+	EXPECT_EQ(task1->get_updated_at(), 1672567200);
+    Task* task2 = manager.get_task("T-002");
+    ASSERT_NE(task2, nullptr);
+    EXPECT_EQ(task2->get_description(), "Test task 2");
+    EXPECT_EQ(task2->get_status(), TaskStatus::IN_PROGRESS);
+	EXPECT_EQ(task2->get_created_at(), 1672657200);
+	EXPECT_EQ(task2->get_updated_at(), 1672658200);
+    Task* task3 = manager.get_task("T-003");
+    ASSERT_NE(task3, nullptr);
+    EXPECT_EQ(task3->get_description(), "Test task 3");
+    EXPECT_EQ(task3->get_status(), TaskStatus::DONE);
+    Task* task4 = manager.get_task("T-004");
+    ASSERT_NE(task4, nullptr);
+    EXPECT_EQ(task4->get_description(), "Test task 4");
+    EXPECT_EQ(task4->get_status(), TaskStatus::TO_DO);
+}
+
+TEST_F(FilereaderTest, readEMptyFile) {
+    std::string empty_filename = "empty_test_file.json";
+	// 创建一个空文件
+	std::ofstream ofs(empty_filename);
+    ASSERT_TRUE(ofs.is_open());
+    ofs.close(); // 立即关闭，使其为空
+
+	TaskManager manager(empty_filename);
+    // 确保没有任务被加载
+	EXPECT_EQ(manager.IsEmpty(), true);
+    // 删除测试文件
+	std::remove(empty_filename.c_str());
+}
+TEST_F(FilereaderTest, FileCreationIfNotExist) {
+    std::string non_existent_file = "non_existent_test_file.json";
+    // 确保文件不存在
+    std::remove(non_existent_file.c_str());
+    // 创建 TaskManager 实例，应该会创建文件
+    TaskManager manager(non_existent_file);
+    // 检查文件是否被创建    
+    std::ifstream ifs(non_existent_file);
+    EXPECT_TRUE(ifs.is_open()) << "File was not created.";
+    ifs.close();
+    // 删除测试文件
+    std::remove(non_existent_file.c_str());
+}
+
+TEST_F(FilereaderTest, SaveToFile) {
+    TaskManager manager("test_tasks.json");
+    // 添加一个新任务
+    manager.add_task("T-005", "Newly added task");
+    // 保存到文件
+    manager.update_task_status("T-005", "IN_PROGRESS");
+    manager.update_task_description("T-005", "Updated description for new task");
+    // 重新加载文件以验证保存
+    TaskManager reloaded_manager("test_tasks.json");
+    Task* task = reloaded_manager.get_task("T-005");
+    ASSERT_NE(task, nullptr); // 确保任务存在
+    EXPECT_EQ(task->get_description(), "Updated description for new task");
+    EXPECT_EQ(task->get_status(), TaskStatus::IN_PROGRESS);
+}

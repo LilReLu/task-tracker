@@ -20,7 +20,8 @@ inline TaskStatus string_to_status(const std::string& s) {
 class Task {
 
 public:
-	Task(const std::string id,const std::string description);
+	Task(const std::string id, const std::string description);
+	Task(const std::string id, const std::string description, TaskStatus statu, std::time_t creat, std::time_t update);
 	~Task();
 
 	Task(const Task&) = delete; // Disable copy constructor
@@ -29,7 +30,6 @@ public:
 
 	void update_status(const std::string); // Update task status
 	void update_description(const std::string); // Update task description
-	void remove(); // Remove task
 
 	// --- Getters (Îª²âÊÔÌí¼Ó) ---
 	const std::string& get_id() const { return id; }

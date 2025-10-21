@@ -1,6 +1,7 @@
 #include <vector>
 #include <fstream>
 #include <memory>
+#include <ctime>
 #include "task.h"
 #include <nlohmann/json.hpp>
 #pragma once
@@ -8,7 +9,7 @@
 class TaskManager {
 
 public:
-	TaskManager();
+	TaskManager(const std::string filename = "tasks.json");
 	~TaskManager();
 
 	TaskManager(const TaskManager&) = delete; // Disable copy constructor
@@ -24,11 +25,16 @@ public:
 	void list_tasks();
 	void list_tasks(TaskStatus statu);
 
+	bool IsEmpty() const {
+		return tasks.empty();
+	}
+
 private:
 	std::vector<std::unique_ptr<Task>> tasks;
+	std::string filename;
 	bool data_flag;
 
 	void ensure_file_exists(const std::string filename);
-	void save_to_file(std::string filename);
+	void save_to_file();
 	void load_from_file(std::string filename);
 };

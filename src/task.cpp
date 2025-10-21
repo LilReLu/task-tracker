@@ -11,6 +11,12 @@ Task::Task(const std::string id,const  std::string description)
 				  << "Description: " << description << std::endl;
 }
 
+Task::Task(const std::string id, const  std::string description, TaskStatus statu, std::time_t creat, std::time_t update)
+	: id(id), description(description), status(statu), created_at(creat), updated_at(update) {
+	std::cout << "Task " << id << " load." << std::endl
+		<< "Description: " << description << std::endl;
+}
+
 Task::~Task() {
 	// Destructor logic if needed
 }
@@ -36,9 +42,5 @@ void Task::update_description(const std::string new_description) {
 	updated_at = std::time(nullptr);
 }
 
-void Task::remove() {
-	// Logic to remove the task, if applicable
-	std::cout << "Task " << id << " removed." << std::endl;
-	Task::~Task(); 
-}
+
 

@@ -5,6 +5,5 @@ int main() {
 	myTask.update_status("IN_PROGRESS");
 	myTask.update_description("Implement task management system with C++");
 	myTask.update_status("DONE");
-	myTask.remove();
 	return 0;
 }

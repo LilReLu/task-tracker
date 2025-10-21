@@ -1,5 +1,6 @@
 #include "task_manager.h"
 #include <memory>
+#include <stdexcept> // 用于抛出异常
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -10,6 +11,8 @@ void TaskManager::ensure_file_exists(const std::string filename) {
 		std::ofstream create_file(filename);
 		create_file << "[]" ; // Initialize with empty JSON array
 		create_file.close();
+
+		std::cerr << "File " << filename << " did not exist and was created." << std::endl;
 	}
 }
 
@@ -17,23 +20,42 @@ void TaskManager::load_from_file(std::string filename) {
 	std::ifstream file(filename);
 	if (!file.is_open()) {
 		std::cerr << "Failed to open file: " << filename << std::endl;
+		throw std::runtime_error("Could not open file: " + filename);
 		return;
 	}
 	nlohmann::json j;
-	file >> j;
-	for (const auto& item : j) {
-		std::string id = item["id"];
-		std::string description = item["description"];
-		std::unique_ptr<Task> task = std::make_unique<Task>(id, description);
-		std::string status_str = item["status"];
-		task->update_status(status_str);
-		tasks.push_back(std::move(task));
+	try {
+		file >> j;
+		for (const auto& item : j) {
+			std::string id = item["id"];
+			std::string description = item["description"];
+			std::time_t created_at = item.value("created_at", std::time_t());
+			std::time_t updated_at = item.value("updated_at", std::time_t());
+			std::string status_str = item["status"];
+			TaskStatus statu = string_to_status(status_str);
+			std::unique_ptr<Task> task = std::make_unique<Task>(id, description, statu, created_at, updated_at);
+			tasks.push_back(std::move(task));
+		}
+	}
+	catch (const std::exception& e) {
+		// 检查文件是否真的为空
+		file.seekg(0, std::ios::end); // 移动到文件末尾
+		if (file.tellg() == 0) {
+			// 文件是空的 (0 字节)
+			// 我们决定将"空文件"视为空的任务列表
+			// 不要抛出异常，安静地返回
+		}
+		else {
+			// 文件不是空的，但 JSON 格式错了，这是一个真正的错误
+			throw; // 重新抛出异常
+		}
 	}
 }
 
-TaskManager::TaskManager() : data_flag(false) {
-	ensure_file_exists("tasks.json");
-	load_from_file("tasks.json");
+TaskManager::TaskManager(const std::string filename )
+	: filename(filename), data_flag(false) {
+	ensure_file_exists(filename);
+	load_from_file(filename);
 }
 TaskManager::~TaskManager() {
 	/*if (data_flag) {
@@ -75,6 +97,7 @@ void TaskManager::update_task_status(std::string id, std::string new_status) {
 	else {
 		std::cerr << "Task with ID " << id << " not found." << std::endl;
 	}
+	save_to_file();
 }
 
 void TaskManager::update_task_description(const std::string id, const std::string new_description) {
@@ -86,6 +109,7 @@ void TaskManager::update_task_description(const std::string id, const std::strin
 	else {
 		std::cerr << "Task with ID " << id << " not found." << std::endl;
 	}
+	save_to_file();
 }
 
 void TaskManager::list_tasks() {
@@ -104,4 +128,36 @@ void TaskManager::list_tasks(TaskStatus statu){
 				<< ", Status: ";
 		}
 	}
+}
+
+inline std::string status_tostring(TaskStatus status) {
+		switch (status) {
+	case TaskStatus::TO_DO:
+		return "TO_DO";
+	case TaskStatus::IN_PROGRESS:
+		return "IN_PROGRESS";
+	case TaskStatus::DONE:
+		return "DONE";
+	default:
+		return "UNKNOWN";
+		}
+}
+
+void TaskManager::save_to_file() {
+	nlohmann::json j = nlohmann::json::array();
+	for (const auto& task : tasks) {
+		nlohmann::json item;
+		item["id"] =  task->get_id();
+		item["description"] = task->get_description();
+		item["status"] = status_tostring( task->get_status() );
+		item["created_at"] = task->get_created_at();
+		item["updated_at"] = task->get_updated_at();
+		j.push_back(item);
+	}
+	std::ofstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file for writing: " << filename << std::endl;
+		return;
+	}
+	file << j.dump(4); // Pretty print with 4 spaces indentation
 }
