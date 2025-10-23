@@ -6,34 +6,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(GTest REQUIRED)
 
-add_executable(task_tests
+add_executable(run_tests
 	task.cpp
-)
-
-add_executable(manager_tests
 	manager.cpp
-)
+	ui.cpp)
 
-target_link_libraries(manager_tests PRIVATE
-	GTest::gtest_main
-	task_cli_lib
-)
-
-target_link_libraries(task_tests PRIVATE
+target_link_libraries(run_tests PRIVATE
 	GTest::gtest_main
 	task_cli_lib
 )
 
 # 包含 GTest 的头文件
-target_include_directories(task_tests PRIVATE
+target_include_directories(run_tests PRIVATE
     ${GTEST_INCLUDE_DIRS}
 	${CMAKE_SOURCE_DIR}/include
 )
 
-target_include_directories(manager_tests PRIVATE
-	${GTEST_INCLUDE_DIRS}
-	${CMAKE_SOURCE_DIR}/include
-)
-
 include(GoogleTest)
-gtest_discover_tests(task_tests)
+gtest_discover_tests(run_tests)

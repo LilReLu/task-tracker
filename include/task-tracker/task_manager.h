@@ -19,8 +19,8 @@ public:
 	bool remove_task(std::string id);
 	Task* get_task(std::string id);
 
-	Task* Taskupdate_task_status(std::string id, std::string new_status);
-	Task* Taskupdate_task_description(const std::string id, const std::string new_description);
+	Task* update_task_status(std::string id, std::string new_status);
+	Task* update_task_description(const std::string id, const std::string new_description);
 
 	std::vector<const Task*> list_tasks();
 	std::vector<const Task*> list_tasks(TaskStatus statu);

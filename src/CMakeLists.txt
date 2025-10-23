@@ -3,7 +3,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(task_cli_lib STATIC
     task.cpp
-    task_manager.cpp "ui.cpp")
+    task_manager.cpp 
+    ui.cpp)
 
 target_include_directories(task_cli_lib PUBLIC
     "${CMAKE_SOURCE_DIR}/include/task-tracker"

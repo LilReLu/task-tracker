@@ -31,3 +31,35 @@ void print_tasks(const std::vector<const Task*>& tasks) {
 		std::cout << "------------------------" << std::endl;
 	}
 }
+
+void print_added_task(const Task* task) {
+	std::cout << "Task added successfully:" << std::endl;
+	print_task(task);
+}	
+
+void print_get_task(const Task* task) {
+	if (task) {
+		std::cout << "Task found:" << std::endl;
+		print_task(task);
+	} else {
+		std::cout << "Task not found." << std::endl;
+	}
+}
+
+void print_removed_task(const std::string& id, bool success) {
+	if (success) {
+		std::cout << "Task with ID " << id << " removed successfully." << std::endl;
+	} else {
+		std::cout << "Task with ID " << id << " not found. Removal failed." << std::endl;
+	}
+}
+
+void print_updated_task(const Task* task) {
+	if (task) {
+		std::cout << "Task updated successfully:" << std::endl;
+		print_task(task);
+	} else {
+		std::cout << "Task update failed." << std::endl;
+	}
+}
+

@@ -93,7 +93,8 @@ Task* TaskManager::get_task(std::string id) {
 	return nullptr;
 }
 
-Task* TaskManager::Taskupdate_task_status(std::string id, std::string new_status) {
+Task*
+TaskManager::update_task_status(std::string id, std::string new_status) {
 	Task* task = get_task(id);
 	if (task) {
 		task->update_status(new_status);
@@ -105,7 +106,7 @@ Task* TaskManager::Taskupdate_task_status(std::string id, std::string new_status
 	return task;
 }
 
-Task* TaskManager::Taskupdate_task_description(const std::string id, const std::string new_description) {
+Task* TaskManager::update_task_description(const std::string id, const std::string new_description) {
 	Task* task = get_task(id);
 	if (task) {
 		task->update_description(new_description);

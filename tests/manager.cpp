@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "task-tracker/task.h"
 #include "task-tracker/task_manager.h"
 #include <thread>  // 用于 std::this_thread::sleep_for
 #include <chrono>  // 用于 std::chrono::seconds
@@ -104,8 +103,8 @@ TEST(TaskManagerTest, RemoveTask) {
 TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
     TaskManager manager;
     manager.add_task("T-008", "Initial description");
-    manager.Taskupdate_task_status("T-008", "IN_PROGRESS");
-    manager.Taskupdate_task_description("T-008", "Updated description");
+    manager.update_task_status("T-008", "IN_PROGRESS");
+    manager.update_task_description("T-008", "Updated description");
     Task* task = manager.get_task("T-008");
     ASSERT_NE(task, nullptr); // 确保任务存在
     EXPECT_NE(task->get_status(), TaskStatus::TO_DO);
@@ -131,9 +130,9 @@ TEST_F(EmptyManagerTest, ListTasksByStatu) {
 	manager.add_task("T-0015", "Task 15");
 	manager.add_task("T-0016", "Task 16");
 	manager.add_task("T-0017", "Task 17");
-	manager.Taskupdate_task_status("T-0015", "IN_PROGRESS");
-	manager.Taskupdate_task_status("T-0016", "IN_PROGRESS");
-	manager.Taskupdate_task_status("T-0017", "DONE");
+	manager.update_task_status("T-0015", "IN_PROGRESS");
+	manager.update_task_status("T-0016", "IN_PROGRESS");
+	manager.update_task_status("T-0017", "DONE");
     std::vector<const Task*> TO_DO_list = manager.list_tasks(TaskStatus::TO_DO);
 	EXPECT_EQ(TO_DO_list.size(), 3); // 确保返回了所有 TO_DO 状态的任务
     std::vector<const Task*> IN_PROGRESS_list = manager.list_tasks(TaskStatus::IN_PROGRESS);
@@ -204,8 +203,8 @@ TEST_F(FilereaderTest, SaveToFile) {
     std::vector<const Task*> new_list = manager.list_tasks();
 	EXPECT_EQ(new_list.size(), 6);
     // 保存到文件
-    manager.Taskupdate_task_status("T-006", "IN_PROGRESS");
-    manager.Taskupdate_task_description("T-006", "Updated description for new task");
+    manager.update_task_status("T-006", "IN_PROGRESS");
+    manager.update_task_description("T-006", "Updated description for new task");
     // 重新加载文件以验证保存
     TaskManager reloaded_manager("test_tasks.json");
     std::vector<const Task*> final_list = reloaded_manager.list_tasks();

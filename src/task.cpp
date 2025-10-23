@@ -33,7 +33,6 @@ void Task::update_status(const std::string new_status) {
 
 void Task::update_description(const std::string new_description) {
 	description = new_description;
-	std::cout << "Task " << id << " description updated." << std::endl;
 	updated_at = std::time(nullptr);
 }
 
