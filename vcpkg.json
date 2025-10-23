@@ -1,6 +1,7 @@
 {
   "dependencies": [
     "nlohmann-json",
-    "gtest"
+    "gtest",
+    "cxxopts"
   ]
 }

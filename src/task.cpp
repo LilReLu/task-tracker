@@ -27,7 +27,6 @@ void Task::update_status(const std::string new_status) {
 		std::cerr << "Invalid status: " << new_status << std::endl;
 		return;
 	}
-	std::cout << "Task " << id << " status updated to " << new_status << "." << std::endl;
 	updated_at = std::time(nullptr);
 }
 

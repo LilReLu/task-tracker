@@ -11,6 +11,7 @@ target_include_directories(task_cli_lib PUBLIC
 )
 
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(cxxopts CONFIG REQUIRED)
 
 target_link_libraries(task_cli_lib PUBLIC
     nlohmann_json::nlohmann_json
@@ -18,6 +19,6 @@ target_link_libraries(task_cli_lib PUBLIC
 
 add_executable(${PROJECT_NAME} main.cpp "task_manager.cpp" "ui.cpp")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE task_cli_lib)
+target_link_libraries(${PROJECT_NAME} PRIVATE task_cli_lib cxxopts::cxxopts)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
