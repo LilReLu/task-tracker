@@ -5,7 +5,7 @@
 
 // 测试构造函数是否正确设置了初始状态
 TEST(TaskTest, ConstructorInitialization) {
-    std::string id = "T-001";
+    int id = 1;
     std::string desc = "Implement the core feature";
 
     Task task(id, desc);
@@ -22,7 +22,7 @@ TEST(TaskTest, ConstructorInitialization) {
 }
 
 TEST(TaskTest, UpdateStatus) {
-    Task task("T-002", "Write unit tests");
+    Task task(2, "Write unit tests");
     // 初始状态应为 TO_DO
     EXPECT_EQ(task.get_status(), TaskStatus::TO_DO);
     // 更新状态为 IN_PROGRESS
@@ -37,7 +37,7 @@ TEST(TaskTest, UpdateStatus) {
 }
 
 TEST(TaskTest, UpdateDescription) {
-    Task task("T-003", "Initial description");
+    Task task(3, "Initial description");
     EXPECT_EQ(task.get_description(), "Initial description");
     std::string new_desc = "Updated description";
     // 更新描述
@@ -46,7 +46,7 @@ TEST(TaskTest, UpdateDescription) {
 }
 
 TEST(TaskTest, TimeUpdateOnModification) {
-    Task task("T-004", "Check timestamps");
+    Task task(4, "Check timestamps");
     std::time_t created_at = task.get_created_at();
     std::time_t updated_at = task.get_updated_at();
     // 刚创建时，created_at 和 updated_at 应相等

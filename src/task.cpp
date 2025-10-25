@@ -2,13 +2,13 @@
 #include <iostream>
 #include <ctime>
 
-Task::Task(const std::string id,const  std::string description) 
+Task::Task(int id,const  std::string description) 
 	: id(id), description(description), status(TaskStatus::TO_DO) {
 		created_at = std::time(nullptr);
 		updated_at = created_at;
 }
 
-Task::Task(const std::string id, const  std::string description, TaskStatus statu, std::time_t creat, std::time_t update)
+Task::Task(int id, const  std::string description, TaskStatus statu, std::time_t creat, std::time_t update)
 	: id(id), description(description), status(statu), created_at(creat), updated_at(update) {
 }
 

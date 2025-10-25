@@ -27,43 +27,46 @@ protected:
 class FilereaderTest : public ::testing::Test {
 protected:
     std::string test_file = "test_tasks.json";
-    std::string test_json_content = R"([
+    std::string test_json_content = R"({
+    "next_id": 6,
+    "tasks": [
         {
-            "id": "T-001",
+            "id": 1,
             "description": "Test task 1",
             "status": "TO_DO",
             "created_at": 1672567200,
             "updated_at": 1672567200
         },
         {
-            "id": "T-002",
+            "id": 2,
             "description": "Test task 2",
             "status": "IN_PROGRESS",
             "created_at": 1672657200,
             "updated_at": 1672658200
         },
         {
-            "id": "T-003",
+            "id": 3,
             "description": "Test task 3",
             "status": "DONE",
             "created_at": 1672743600,
             "updated_at": 1672744600
         },
         {
-            "id": "T-004",
+            "id": 4,
             "description": "Test task 4",
             "status": "TO_DO",
             "created_at": 1672830000,
             "updated_at": 1672830000
         },
         {
-            "id": "T-005",
+            "id": 5,
             "description": "Test task 5",
             "status": "TO_DO",
             "created_at": 1672830099,
             "updated_at": 1672830059
         }
-    ])";
+    ]
+})"; // 注意这里的括号
     void SetUp() override {
         // 在每个测试前创建测试文件
         std::ofstream ofs(test_file);
@@ -78,34 +81,34 @@ protected:
 	}
 };
 
-TEST(TaskManagerTest, AddAndGetTask) {
-    TaskManager manager;
-	Task* empty_task = manager.get_task("NON_EXISTENT");
+TEST_F(EmptyManagerTest, AddAndGetTask) {
+    TaskManager manager(test_file_name);
+	Task* empty_task = manager.get_task(648);
 	EXPECT_EQ(empty_task, nullptr); // 确保不存在的任务返回 nullptr
-    manager.add_task("T-006", "Manage tasks effectively");
-    Task* task = manager.get_task("T-006");
+    manager.add_task("Manage tasks effectively");
+    Task* task = manager.get_task(1);
     ASSERT_NE(task, nullptr); // 确保任务被正确添加
-    EXPECT_EQ(task->get_id(), "T-006");
+    EXPECT_EQ(task->get_id(), 1);
     EXPECT_EQ(task->get_description(), "Manage tasks effectively");
 }
 
 TEST(TaskManagerTest, RemoveTask) {
     TaskManager manager;
-    manager.add_task("T-007", "Task to be removed from manager");
-    Task* task = manager.get_task("T-007");
+    manager.add_task("Task to be removed from manager");
+    Task* task = manager.get_task(1);
     ASSERT_NE(task, nullptr); // 确保任务被正确添加
-    bool flag = manager.remove_task("T-007");
+    bool flag = manager.remove_task(1);
 	EXPECT_EQ(flag, true); // 确保移除操作成功
-    Task* removed_task = manager.get_task("T-007");
+    Task* removed_task = manager.get_task(1);
     EXPECT_EQ(removed_task, nullptr); // 确保任务被正确移除
 }
 
 TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
     TaskManager manager;
-    manager.add_task("T-008", "Initial description");
-    manager.update_task_status("T-008", "IN_PROGRESS");
-    manager.update_task_description("T-008", "Updated description");
-    Task* task = manager.get_task("T-008");
+    manager.add_task("Initial description");
+    manager.update_task_status(1, "IN_PROGRESS");
+    manager.update_task_description(1, "Updated description");
+    Task* task = manager.get_task(1);
     ASSERT_NE(task, nullptr); // 确保任务存在
     EXPECT_NE(task->get_status(), TaskStatus::TO_DO);
     EXPECT_EQ(task->get_status(), TaskStatus::IN_PROGRESS);
@@ -115,24 +118,24 @@ TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
 
 TEST_F(EmptyManagerTest, ListAllTasks) {
     TaskManager manager(test_file_name);
-    manager.add_task("T-009", "Task 9");
-    manager.add_task("T-010", "Task 10");
-    manager.add_task("T-011", "Task 11");
+    manager.add_task("Task 9");
+    manager.add_task("Task 10");
+    manager.add_task("Task 11");
 	std::vector<const Task*> need_list = manager.list_tasks();
 	EXPECT_EQ(need_list.size(), 3); // 确保返回了所有任务
 }
 
 TEST_F(EmptyManagerTest, ListTasksByStatu) {
 	TaskManager manager(test_file_name);
-	manager.add_task("T-0012", "Task 12");
-	manager.add_task("T-0013", "Task 13");
-	manager.add_task("T-0014", "Task 14");
-	manager.add_task("T-0015", "Task 15");
-	manager.add_task("T-0016", "Task 16");
-	manager.add_task("T-0017", "Task 17");
-	manager.update_task_status("T-0015", "IN_PROGRESS");
-	manager.update_task_status("T-0016", "IN_PROGRESS");
-	manager.update_task_status("T-0017", "DONE");
+	manager.add_task("Task 6");
+	manager.add_task("Task 7");
+	manager.add_task("Task 8");
+	manager.add_task("Task 9");
+	manager.add_task("Task 10");
+	manager.add_task("Task 11");
+	manager.update_task_status(4, "IN_PROGRESS");
+	manager.update_task_status(5, "IN_PROGRESS");
+	manager.update_task_status(6, "DONE");
     std::vector<const Task*> TO_DO_list = manager.list_tasks(TaskStatus::TO_DO);
 	EXPECT_EQ(TO_DO_list.size(), 3); // 确保返回了所有 TO_DO 状态的任务
     std::vector<const Task*> IN_PROGRESS_list = manager.list_tasks(TaskStatus::IN_PROGRESS);
@@ -172,23 +175,23 @@ TEST_F(FilereaderTest, readEMptyFile) {
 TEST_F(FilereaderTest, LoadFromFile) {
     TaskManager manager("test_tasks.json");
     // 检查任务是否正确加载
-    Task* task1 = manager.get_task("T-001");
+    Task* task1 = manager.get_task(1);
     ASSERT_NE(task1, nullptr);
     EXPECT_EQ(task1->get_description(), "Test task 1");
     EXPECT_EQ(task1->get_status(), TaskStatus::TO_DO);
     EXPECT_EQ(task1->get_created_at(), 1672567200);
     EXPECT_EQ(task1->get_updated_at(), 1672567200);
-    Task* task2 = manager.get_task("T-002");
+    Task* task2 = manager.get_task(2);
     ASSERT_NE(task2, nullptr);
     EXPECT_EQ(task2->get_description(), "Test task 2");
     EXPECT_EQ(task2->get_status(), TaskStatus::IN_PROGRESS);
     EXPECT_EQ(task2->get_created_at(), 1672657200);
     EXPECT_EQ(task2->get_updated_at(), 1672658200);
-    Task* task3 = manager.get_task("T-003");
+    Task* task3 = manager.get_task(3);
     ASSERT_NE(task3, nullptr);
     EXPECT_EQ(task3->get_description(), "Test task 3");
     EXPECT_EQ(task3->get_status(), TaskStatus::DONE);
-    Task* task4 = manager.get_task("T-004");
+    Task* task4 = manager.get_task(4);
     ASSERT_NE(task4, nullptr);
     EXPECT_EQ(task4->get_description(), "Test task 4");
     EXPECT_EQ(task4->get_status(), TaskStatus::TO_DO);
@@ -199,17 +202,17 @@ TEST_F(FilereaderTest, SaveToFile) {
     std::vector<const Task*> list = manager.list_tasks();
     EXPECT_EQ(list.size(), 5); 
     // 添加一个新任务
-    manager.add_task("T-006", "Newly added task");
+    manager.add_task("Newly added task");
     std::vector<const Task*> new_list = manager.list_tasks();
 	EXPECT_EQ(new_list.size(), 6);
     // 保存到文件
-    manager.update_task_status("T-006", "IN_PROGRESS");
-    manager.update_task_description("T-006", "Updated description for new task");
+    manager.update_task_status(6, "IN_PROGRESS");
+    manager.update_task_description(6, "Updated description for new task");
     // 重新加载文件以验证保存
     TaskManager reloaded_manager("test_tasks.json");
     std::vector<const Task*> final_list = reloaded_manager.list_tasks();
 	EXPECT_EQ(final_list.size(), 6);
-    Task* task = reloaded_manager.get_task("T-006");
+    Task* task = reloaded_manager.get_task(6);
     ASSERT_NE(task, nullptr); // 确保任务存在
     EXPECT_EQ(task->get_description(), "Updated description for new task");
     EXPECT_EQ(task->get_status(), TaskStatus::IN_PROGRESS);

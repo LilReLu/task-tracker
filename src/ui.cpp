@@ -46,7 +46,7 @@ void print_get_task(const Task* task) {
 	}
 }
 
-void print_removed_task(const std::string& id, bool success) {
+void print_removed_task(const int& id, bool success) {
 	if (success) {
 		std::cout << "Task with ID " << id << " removed successfully." << std::endl;
 	} else {

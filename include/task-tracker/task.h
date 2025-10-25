@@ -30,8 +30,8 @@ inline std::string status_to_string(TaskStatus status) {
 class Task {
 
 public:
-	Task(const std::string id, const std::string description);
-	Task(const std::string id, const std::string description, TaskStatus statu, std::time_t creat, std::time_t update);
+	Task(int id, const std::string description);
+	Task(int id, const std::string description, TaskStatus statu, std::time_t creat, std::time_t update);
 	~Task();
 
 	Task(const Task&) = delete; // Disable copy constructor
@@ -42,14 +42,14 @@ public:
 	void update_description(const std::string); // Update task description
 
 	// --- Getters (Îª²âÊÔÌí¼Ó) ---
-	const std::string& get_id() const { return id; }
+	const int& get_id() const { return id; }
 	const std::string& get_description() const { return description; }
 	TaskStatus get_status() const { return status; }
 	std::time_t get_created_at() const { return created_at; }
 	std::time_t get_updated_at() const { return updated_at; }
 
 private:
-	std::string id;
+	int id;
 	std::string description;
 	TaskStatus status;
 
