@@ -135,6 +135,53 @@ TEST_F(PrintTest, PrintGetTask) {
     EXPECT_NE(output.find("Task not found"), std::string::npos);
 }
 
+TEST_F(PrintTest, PrintEmptyTaskList) {
+    TaskManager manager(test_file);
+    // 清空所有任务
+    manager.clear_all_tasks();
+    testing::internal::CaptureStdout();
+    std::vector<const Task*> empty_tasks = manager.list_tasks();
+    print_tasks(empty_tasks);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("No tasks to display"), std::string::npos);
+}
+
+TEST_F(PrintTest, PrintClearedAllTasks) {
+    TaskManager manager(test_file);
+    bool success = manager.clear_all_tasks();
+    testing::internal::CaptureStdout();
+    print_cleared_all_tasks(success);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("cleared successfully"), std::string::npos);
+    // 尝试清空已经为空的任务列表
+    success = manager.clear_all_tasks();
+    testing::internal::CaptureStdout();
+    print_cleared_all_tasks(success);
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("No tasks to clear"), std::string::npos);
+}
+
+TEST_F(PrintTest, PrintRemovedLastTask) {
+    TaskManager manager(test_file);
+    bool success = manager.remove_last_task();
+    testing::internal::CaptureStdout();
+	int id = 5;
+    print_removed_last_task(id, success); // 假设最后一个任务 ID 是 5
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("Last task removed successfully"), std::string::npos);
+    // 尝试移除最后一个任务直到没有任务为止
+    manager.remove_last_task();
+    manager.remove_last_task();
+    manager.remove_last_task();
+    manager.remove_last_task();
+    success = manager.remove_last_task(); // 现在应该没有任务了
+    testing::internal::CaptureStdout();
+	id = -1;
+    print_removed_last_task(id, success); // ID 无意义
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("No tasks to remove"), std::string::npos);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

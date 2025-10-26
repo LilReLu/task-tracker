@@ -31,6 +31,16 @@ public:
 		return tasks.empty();
 	}
 
+	int get_last_id() const {
+		int last_id = 0;
+		for (const auto& task:tasks){
+			if (task->get_id() > last_id){
+				last_id = task->get_id();
+			}
+		}
+		return last_id;
+	}
+
 private:
 	std::vector<std::unique_ptr<Task>> tasks;
 	std::string filename;

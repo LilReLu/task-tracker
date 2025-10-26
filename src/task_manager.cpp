@@ -3,6 +3,7 @@
 #include <stdexcept> // 用于抛出异常
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <nlohmann/json.hpp>
 
 TaskManager::TaskManager(const std::string filename )
@@ -79,8 +80,8 @@ void TaskManager::load_from_file(std::string filename) {
 Task* TaskManager::add_task(std::string description) {
 	std::unique_ptr<Task> task = std::make_unique<Task>(next_id, description);
 	tasks.push_back(std::move(task));
-	save_to_file();
 	next_id++;
+	save_to_file();
 	return tasks.back().get();
 }
 

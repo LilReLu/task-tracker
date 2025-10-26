@@ -24,6 +24,8 @@ int main() {
         ("a,add", "添加一个新任务", cxxopts::value<std::string>(), "<任务描述>")
         ("r,remove", "按 ID 删除一个任务", cxxopts::value<int>(), "<任务ID>")
         ("u,update", "按 ID 更新一个任务 (必须配合 --desc 或 --status)", cxxopts::value<int>(), "<任务ID>")
+        ("r-last", "删除最后添加的任务")
+		("c,clear", "清除所有任务")
         ("d,desc", "设置新的任务描述 (配合 --update)", cxxopts::value<std::string>())
         ("s,status", "设置新的任务状态 (TO_DO, IN_PROGRESS, DONE)", cxxopts::value<std::string>())
         ("h,help", "打印帮助信息");
@@ -108,6 +110,28 @@ int main() {
                 int id = result["remove"].as<int>();
                 bool success = manager.remove_task(id);
                 print_removed_task(id, success);
+            }
+
+            else if (result.count("r-last")) {
+				int last_id = manager.get_last_id();
+                bool success = manager.remove_last_task();
+				print_removed_last_task(last_id, success);
+			}
+
+			// --- 清除所有任务 (Clear All) ---
+            else if (result.count("clear")) {
+                std::cout << "警告: 你确定要清除所有任务吗？这将不可恢复。输入 'y' 确认: ";
+				std::string confirmation;
+				std::getline(std::cin, confirmation);
+                if (confirmation == "y" || confirmation == "Y") {
+                    bool success = manager.clear_all_tasks();
+                    if (success) {
+                        std::cout << "已清除所有任务。" << std::endl;
+                    }
+                    else {
+                        std::cout << "任务列表已为空，无需清除。" << std::endl;
+                    }
+                }
             }
 
             // --- 查 (Get) ---

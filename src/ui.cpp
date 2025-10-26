@@ -63,3 +63,19 @@ void print_updated_task(const Task* task) {
 	}
 }
 
+void print_removed_last_task(int& id, bool success) {
+	if (success) {
+		std::cout << "Last task removed successfully.ID : " << id << std::endl;
+	} else {
+		std::cout << "No tasks to remove." << std::endl;
+	}
+}
+
+void print_cleared_all_tasks(bool success) {
+	if (success) {
+		std::cout << "All tasks cleared successfully." << std::endl;
+	} else {
+		std::cout << "No tasks to clear." << std::endl;
+	}
+}
+
