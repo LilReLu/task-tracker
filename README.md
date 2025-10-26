@@ -1,7 +1,7 @@
-﻿task-trackertask-tracker is a simple, command-line (CLI) task management tool written in C++20 [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/CMakeLists.txt, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/CMakeLists.txt].It provides an interactive REPL (Read-Eval-Print Loop) to add, remove, update, and list your tasks. All tasks are automatically persisted to a local tasks.json file, ensuring your data is saved between sessions [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/task_manager.cpp].✨ FeaturesAdd Task: Add a new task with a description [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].List Tasks: Show all tasks, or filter by status (TO_DO, IN_PROGRESS, DONE) [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].Get Task: View details for a single task by its ID [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].Update Task: Update a task's description or status by ID [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].Remove Task: Delete a task by its ID [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].Remove Last: Remove the most recently added task [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].Clear All: Deletes all tasks from storage (with a safety confirmation) [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].Persistent Storage: All changes are immediately saved to tasks.json [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/task_manager.cpp].🛠️ Tech StackLanguage: C++20 [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/CMakeLists.txt, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/CMakeLists.txt]Build System: CMake [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/CMakeLists.txt]Package Manager: vcpkg (via vcpkg.json manifest) [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/vcpkg.json, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/CMakePresets.json]Core Libraries:nlohmann/json: For JSON serialization/deserialization (task persistence) [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/vcpkg.json, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/task_manager.cpp].cxxopts: For parsing command-line arguments in the REPL [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/vcpkg.json, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].GoogleTest: For unit testing [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/vcpkg.json, lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/tests/CMakeLists.txt].🚀 Getting StartedPrerequisitesCMake (3.15+) [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/CMakeLists.txt]A C++20 compliant compiler (e.g., MSVC, GCC, Clang)vcpkg (for installing dependencies)Build & RunClone the repository:git clone [https://github.com/your-username/task-tracker.git](https://github.com/your-username/task-tracker.git)
+﻿task-trackertask-tracker is a simple, command-line (CLI) task management tool written in C++20. It provides an interactive REPL (Read-Eval-Print Loop) to add, remove, update, and list your tasks. All tasks are automatically persisted to a local tasks.json file, ensuring your data is saved between sessions.✨ FeaturesAdd Task: Add a new task with a description.List Tasks: Show all tasks, or filter by status (TO_DO, IN_PROGRESS, DONE).Get Task: View details for a single task by its ID.Update Task: Update a task's description or status by ID.Remove Task: Delete a task by its ID.Remove Last: Remove the most recently added task.Clear All: Deletes all tasks from storage (with a safety confirmation).Persistent Storage: All changes are immediately saved to tasks.json.🛠️ Tech StackLanguage: C++20Build System: CMakePackage Manager: vcpkg (via vcpkg.json manifest)Core Libraries:nlohmann/json: For JSON serialization/deserialization (task persistence).cxxopts: For parsing command-line arguments in the REPL.GoogleTest: For unit testing.🚀 Getting StartedPrerequisitesCMake (3.15+)A C++20 compliant compiler (e.g., MSVC, GCC, Clang)vcpkg (for installing dependencies)Build & RunClone the repository:git clone [https://github.com/your-username/task-tracker.git](https://github.com/your-username/task-tracker.git)
 cd task-tracker
 Install dependencies using vcpkg:vcpkg will automatically read the vcpkg.json file and install the required libraries.vcpkg install
-Configure CMake:This project uses CMakePresets.json [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/CMakePresets.json] for easy configuration. Make sure to replace <path-to-vcpkg> with the path to your vcpkg installation.# Example for Windows (using the preset)
+Configure CMake:This project uses CMakePresets.json for easy configuration. Make sure to replace <path-to-vcpkg> with the path to your vcpkg installation.# Example for Windows (using the preset)
 cmake --preset=x64-debug -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake
 
 # Example for Linux/macOS (manual)
@@ -12,11 +12,11 @@ cmake --build out/build/x64-debug
 # Or manually
 # cmake --build build
 Run the application:# Windows
-./out/build/x64-debug/task-tracker.exe
+./out/build/x64-debug/src/task-tracker.exe
 
 # Linux/macOS
-# ./build/task-tracker
-⌨️ How to UseOnce started, the application enters an interactive REPL mode, indicated by the > prompt. Type help to see all commands, or exit/quit to leave [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/srcB/main.cpp].All commands are parsed using cxxopts [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/src/main.cpp].help or h: Prints the help message.add <desc> or a <desc>: Adds a new task. Use quotes for descriptions with spaces (e.g., add "My new task").list or l: Lists all tasks (this is the default action if no command is given).list --status <STATUS>: Filters the list by status. <STATUS> can be TO_DO, IN_PROGRESS, or DONE.get <ID> or g <ID>: Gets a single task by its ID.remove <ID> or r <ID>: Removes a task by its ID.r-last: Removes the most recently added task.update <ID> [--desc <text>] [--status <STATUS>]: Updates a task. You must provide at least one of --desc or --status.clear or c: Clears all tasks from storage (requires 'y' confirmation).exit or quit: Exits the program.Example SessionWelcome to the interactive task manager.
+# ./build/src/task-tracker
+⌨️ How to UseOnce started, the application enters an interactive REPL mode, indicated by the > prompt. Type help to see all commands, or exit/quit to leave.All commands are parsed using cxxopts.help or h: Prints the help message.add <desc> or a <desc>: Adds a new task. Use quotes for descriptions with spaces (e.g., add "My new task").list or l: Lists all tasks (this is the default action if no command is given).list --status <STATUS>: Filters the list by status. <STATUS> can be TO_DO, IN_PROGRESS, or DONE.get <ID> or g <ID>: Gets a single task by its ID.remove <ID> or r <ID>: Removes a task by its ID.r-last: Removes the most recently added task.update <ID> [--desc <text>] [--status <STATUS>]: Updates a task. You must provide at least one of --desc or --status.clear or c: Clears all tasks from storage (requires 'y' confirmation).exit or quit: Exits the program.Example SessionWelcome to the interactive task manager.
 Type 'help' for commands, 'exit' or 'quit' to exit.
 ---
 > add "Learn C++"
@@ -68,9 +68,84 @@ Task with ID 1 removed successfully.
 
 > quit
 Exiting...
-🧪 Running TestsThis project includes a comprehensive test suite using GoogleTest [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/vcpkg.json]. The tests cover the core Task logic [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/tests/task.cpp], the TaskManager functionality (including file I/O) [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/tests/manager.cpp], and the UI print functions [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/tests/ui.cpp].To build and run the tests, execute the run_tests target generated by CMake [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/tests/CMakeLists.txt]:# Windows
+🧪 Running TestsThis project includes a comprehensive test suite using GoogleTest. The tests cover the core Task logic, the TaskManager functionality (including file I/O), and the UI print functions.To build and run the tests, execute the run_tests target generated by CMake:# Windows
 ./out/build/x64-debug/tests/run_tests.exe
 
 # Linux/macOS
 # ./build/tests/run_tests
-📄 LicenseThis project is licensed under the MIT License [cite: lilrelu/task-tracker/task-tracker-38268c593b383a3da9c5453af831dda56f8089ec/LICENSE].
+📄 LicenseThis project is licensed under the MIT License.task-tracker (中文)task-tracker 是一个使用 C++20 编写的简单命令行 (CLI) 任务管理工具。它提供了一个交互式 REPL (读取-求值-打印循环) 来添加、删除、更新和列出您的任务。所有任务都会自动持久化到本地的 tasks.json 文件中，确保您的数据在会话之间得以保存。✨ 功能特性添加任务: 添加一个带描述的新任务。列出任务: 显示所有任务，或按状态 (TO_DO, IN_PROGRESS, DONE) 筛选。获取任务: 按 ID 查看单个任务的详细信息。更新任务: 按 ID 更新任务的描述或状态。删除任务: 按 ID 删除一个任务。删除最后任务: 删除最近添加的任务。清空所有: 从存储中删除所有任务 (有安全确认)。持久化存储: 所有更改都会立即保存到 tasks.json。🛠️ 技术栈语言: C++20构建系统: CMake包管理器: vcpkg (通过 vcpkg.json 清单)核心库:nlohmann/json: 用于 JSON 序列化/反序列化 (任务持久化)。cxxopts: 用于在 REPL 中解析命令行参数。GoogleTest: 用于单元测试。🚀 开始使用先决条件CMake (3.15+)兼容 C++20 的编译器 (例如 MSVC, GCC, Clang)vcpkg (用于安装依赖项)构建与运行克隆仓库:git clone [https://github.com/your-username/task-tracker.git](https://github.com/your-username/task-tracker.git)
+cd task-tracker
+使用 vcpkg 安装依赖:vcpkg 将自动读取 vcpkg.json 文件并安装所需的库。vcpkg install
+配置 CMake:本项目使用 CMakePresets.json 以便轻松配置。请确保将 <path-to-vcpkg> 替换为您的 vcpkg 安装路径。# Windows 示例 (使用预设)
+cmake --preset=x64-debug -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake
+
+# Linux/macOS 示例 (手动)
+# cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug
+构建项目:# 使用预设
+cmake --build out/build/x64-debug
+
+# 或手动
+# cmake --build build
+运行应用:# Windows
+./out/build/x64-debug/src/task-tracker.exe
+
+# Linux/macOS
+# ./build/src/task-tracker
+⌨️ 如何使用启动后，应用程序会进入一个交互式 REPL 模式，由 > 提示符表示。输入 help 查看所有命令，或输入 exit/quit 退出。所有命令均使用 cxxopts 解析。help 或 h: 打印帮助信息。add <desc> 或 a <desc>: 添加一个新任务。对于包含空格的描述，请使用引号 (例如 add "我的新任务")。list 或 l: 列出所有任务 (如果未提供任何命令，则为默认操作)。list --status <STATUS>: 按状态筛选列表。<STATUS> 可以是 TO_DO, IN_PROGRESS, 或 DONE。get <ID> 或 g <ID>: 按 ID 获取单个任务。remove <ID> 或 r <ID>: 按 ID 删除任务。r-last: 删除最近添加的任务。update <ID> [--desc <text>] [--status <STATUS>]: 更新一个任务。您必须至少提供 --desc 或 --status 中的一个。clear 或 c: 清空所有任务 (需要 'y' 确认)。exit 或 quit: 退出程序。示例会话Welcome to the interactive task manager.
+Type 'help' for commands, 'exit' or 'quit' to exit.
+---
+> add "学习 C++"
+Task added successfully:
+-------------------------
+Task ID: 1
+Description: 学习 C++
+Status: TO_DO
+Created At: Sun Oct 26 21:30:00 2025
+Updated At: Sun Oct 26 21:30:00 2025
+-------------------------
+
+> add "编写 README 文件"
+Task added successfully:
+-------------------------
+Task ID: 2
+Description: 编写 README 文件
+Status: TO_DO
+Created At: Sun Oct 26 21:30:15 2025
+Updated At: Sun Oct 26 21:30:15 2025
+-------------------------
+
+> list
+-------------------------
+Task ID: 1
+Description: 学习 C++
+Status: TO_DO
+...
+-------------------------
+------------------------
+Task ID: 2
+Description: 编写 README 文件
+Status: TO_DO
+...
+-------------------------
+
+> update 2 --status "IN_PROGRESS"
+Task updated successfully:
+-------------------------
+Task ID: 2
+Description: 编写 README 文件
+Status: IN_PROGRESS
+...
+Updated At: Sun Oct 26 21:30:30 2025
+-------------------------
+
+> r 1
+Task with ID 1 removed successfully.
+
+> quit
+Exiting...
+🧪 运行测试本项目包含一个使用 GoogleTest 的综合测试套件。测试覆盖了核心的 Task 逻辑、TaskManager 功能 (包括文件 I/O) 以及 UI 打印功能。要构建和运行测试，请执行 CMake 生成的 run_tests 目标：# Windows
+./out/build/x64-debug/tests/run_tests.exe
+
+# Linux/macOS
+# ./build/tests/run_tests
+📄 许可证本项目基于 MIT 许可证授权。
