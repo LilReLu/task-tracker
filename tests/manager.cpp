@@ -5,11 +5,9 @@
 
 class EmptyManagerTest : public ::testing::Test {
 protected:
-    // 为这个 Fixture 定义一个唯一的、临时的文件名
     std::string test_file_name = "empty_manager_test_file.json";
 
     void SetUp() override {
-        // 在 *每个* TEST_F 之前运行
         // 确保文件是干净的，只包含一个空的 JSON 数组
         std::ofstream ofs(test_file_name);
         ASSERT_TRUE(ofs.is_open());
@@ -18,7 +16,6 @@ protected:
     }
 
     void TearDown() override {
-        // 在 *每个* TEST_F 之后运行
         // 删除这个临时文件，为下一个测试做准备
         std::remove(test_file_name.c_str());
     }
