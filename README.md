@@ -1,5 +1,7 @@
 # **task-tracker**
 
+**Project URL:** [https://roadmap.sh/projects/task-tracker](https://roadmap.sh/projects/task-tracker)
+
 task-tracker is a simple, command-line (CLI) task management tool written in C++20. It provides an interactive REPL (Read-Eval-Print Loop) to add, remove, update, and list your tasks. All tasks are automatically persisted to a local tasks.json file, ensuring your data is saved between sessions.
 
 ## **✨ Features**
@@ -153,6 +155,8 @@ This project is licensed under the MIT License.
 
 # **task-tracker (中文)**
 
+**项目链接:** [https://roadmap.sh/projects/task-tracker](https://roadmap.sh/projects/task-tracker)
+
 task-tracker 是一个使用 C++20 编写的简单命令行 (CLI) 任务管理工具。它提供了一个交互式 REPL (读取-求值-打印循环) 来添加、删除、更新和列出您的任务。所有任务都会自动持久化到本地的 tasks.json 文件中，确保您的数据在会话之间得以保存。
 
 ## **✨ 功能特性**
@@ -292,7 +296,7 @@ Exiting...
 
 本项目包含一个使用 GoogleTest 的综合测试套件。测试覆盖了核心的 Task 逻辑、TaskManager 功能 (包括文件 I/O) 以及 UI 打印功能。
 
-要构建和运行测试，请执行 CMake 生成的 run\_tests 目标：
+要构建和运行测试，请执行 CMake 生成的 run\_tests Gst 目标：
 
 \# Windows  
 ./out/build/x64-debug/tests/run\_tests.exe
