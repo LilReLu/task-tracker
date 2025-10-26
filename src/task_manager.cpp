@@ -95,7 +95,26 @@ bool TaskManager::remove_task(int id) {
 		tasks.end()
 	);
 	const size_t new_size = tasks.size();
+	save_to_file();
 	return new_size < original_size;
+}
+
+bool TaskManager::remove_last_task() {
+	if (tasks.empty()) {
+		return false; // No tasks to remove
+	}
+	tasks.pop_back();
+	save_to_file();
+	return true;
+}
+
+bool TaskManager::clear_all_tasks() {
+	if (tasks.empty()) {
+		return false; // No tasks to clear
+	}
+	tasks.clear();
+	save_to_file();
+	return true;
 }
 
 Task* TaskManager::get_task(int id) {

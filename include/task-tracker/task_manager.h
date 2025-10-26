@@ -17,6 +17,8 @@ public:
 
 	Task* add_task(std::string description);
 	bool remove_task(int id);
+	bool remove_last_task();
+	bool clear_all_tasks();
 	Task* get_task(int id);
 
 	Task* update_task_status(int id, std::string new_status);

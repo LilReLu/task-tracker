@@ -92,8 +92,8 @@ TEST_F(EmptyManagerTest, AddAndGetTask) {
     EXPECT_EQ(task->get_description(), "Manage tasks effectively");
 }
 
-TEST(TaskManagerTest, RemoveTask) {
-    TaskManager manager;
+TEST_F(EmptyManagerTest, RemoveTask) {
+    TaskManager manager(test_file_name);
     manager.add_task("Task to be removed from manager");
     Task* task = manager.get_task(1);
     ASSERT_NE(task, nullptr); // 确保任务被正确添加
@@ -103,8 +103,8 @@ TEST(TaskManagerTest, RemoveTask) {
     EXPECT_EQ(removed_task, nullptr); // 确保任务被正确移除
 }
 
-TEST(TaskManagerTest, UpdateTaskStatusAndDescription) {
-    TaskManager manager;
+TEST_F(EmptyManagerTest, UpdateTaskStatusAndDescription) {
+    TaskManager manager(test_file_name);
     manager.add_task("Initial description");
     manager.update_task_status(1, "IN_PROGRESS");
     manager.update_task_description(1, "Updated description");
@@ -216,4 +216,29 @@ TEST_F(FilereaderTest, SaveToFile) {
     ASSERT_NE(task, nullptr); // 确保任务存在
     EXPECT_EQ(task->get_description(), "Updated description for new task");
     EXPECT_EQ(task->get_status(), TaskStatus::IN_PROGRESS);
+}
+
+TEST_F(FilereaderTest, RemoveLastTask) {
+    TaskManager manager("test_tasks.json");
+    std::vector<const Task*> list = manager.list_tasks();
+    EXPECT_EQ(list.size(), 5); 
+    // 移除最后一个任务
+    bool flag = manager.remove_last_task();
+    EXPECT_EQ(flag, true);
+    std::vector<const Task*> new_list = manager.list_tasks();
+    EXPECT_EQ(new_list.size(), 4); 
+    // 验证最后一个任务已被移除
+    Task* task = manager.get_task(5);
+    EXPECT_EQ(task, nullptr); // 确保任务被正确移除
+}   
+
+TEST_F(FilereaderTest, ClearAllTasks) {
+    TaskManager manager("test_tasks.json");
+    std::vector<const Task*> list = manager.list_tasks();
+    EXPECT_EQ(list.size(), 5); 
+    // 清除所有任务
+    bool flag = manager.clear_all_tasks();
+    EXPECT_EQ(flag, true);
+    std::vector<const Task*> new_list = manager.list_tasks();
+    EXPECT_EQ(new_list.size(), 0); 
 }
